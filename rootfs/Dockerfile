@@ -1,3 +1,9 @@
+FROM quay.io/deis/go-dev:0.20.0 as go-build
+
+WORKDIR /go/src/github.com/deis/registry
+COPY . ./
+RUN make build DEV_ENV_CMD= BINDIR=/opt
+
 FROM registry:2.6.0
 
 RUN apk add --no-cache \
@@ -18,7 +24,8 @@ RUN buildDeps='gcc git linux-headers musl-dev python3-dev' && \
     # purge dev dependencies
     apk del $buildDeps
 
-COPY . /
+COPY rootfs/ /
+COPY --from=go-build /opt/registry /opt/registry/sbin/registry
 
 VOLUME ["/var/lib/registry"]
 CMD ["/opt/registry/sbin/registry"]

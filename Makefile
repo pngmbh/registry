@@ -13,7 +13,7 @@ SHELL_SCRIPTS = $(wildcard _scripts/*.sh contrib/ci/*.sh)
 
 # The following variables describe the containerized development environment
 # and other build options
-DEV_ENV_IMAGE := quay.io/deis/go-dev:0.20.0
+DEV_ENV_IMAGE := quay.io/deis/go-dev:0.20.0 # see also the first stage of the Dockerfile
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
 DEV_ENV_PREFIX := docker run --rm -v ${CURDIR}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR}
 DEV_ENV_CMD := ${DEV_ENV_PREFIX} ${DEV_ENV_IMAGE}
@@ -30,14 +30,14 @@ endif
 all:
 	@echo "Use a Makefile to control top-level building of the project."
 
-build: check-docker
+build:
 	mkdir -p ${BINDIR}
 	$(MAKE) build-binary
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
-docker-build: check-docker build
-	docker build ${DOCKER_BUILD_FLAGS} -t ${IMAGE} rootfs
+docker-build: 
+	docker build ${DOCKER_BUILD_FLAGS} -f rootfs/Dockerfile -t ${IMAGE} .
 	docker tag ${IMAGE} ${MUTABLE_IMAGE}
 
 build-binary:
