@@ -19,6 +19,7 @@ const (
 func main() {
 	log.Println("INFO: Starting registry...")
 	storageType := getenv("REGISTRY_STORAGE", "filesystem")
+	os.Setenv("REGISTRY_STORAGE_REDIRECT_DISABLE", "true")
 	if storageType == "gcs" {
 		log.Println("INFO: using google cloud storage as the backend")
 		if _, err := os.Stat("/var/run/secrets/deis/registry/creds/key.json"); err != nil {
