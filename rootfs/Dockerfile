@@ -4,7 +4,7 @@ WORKDIR /go/src/github.com/deis/registry
 COPY . ./
 RUN make build DEV_ENV_CMD= BINDIR=/opt
 
-FROM registry:2.6.0
+FROM registry:2.6.2
 
 RUN apk add --no-cache \
         python3 && \
